@@ -1,23 +1,14 @@
-const { v4: uuid} = require('uuid');
 const { validationResult } = require('express-validator');
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
 
-const DUMMY_USERS = [
-    {
-        id: 'u1',
-        name: 'Max Schwarz',
-        email: 'test@test.com',
-        password: 'testers'
-    }
-];
 
 const getUsers = async (req, res, next) => {
     
     let users;
     try {
-        users = await User.find();
+        users = await User.find({}, '-password');
     } catch (err){
         const error = new HttpError("Error getting users", 500);
         return next(error);
@@ -33,7 +24,7 @@ const signup = async (req, res, next) => {
         return next(error);
     }
 
-    const { name, email, password, places } = req.body;
+    const { name, email, password } = req.body;
 
     let existingUser;
     try {
@@ -53,7 +44,7 @@ const signup = async (req, res, next) => {
         email,
         image: "https://www.seekpng.com/png/full/138-1388103_user-login-icon-login.png",
         password,
-        places
+        places: []
     });
 
     try {
@@ -72,7 +63,7 @@ const login = async (req, res, next) => {
     let existingUser;
 
     try {
-        existingUser = await User.find({ email: email });
+        existingUser = await User.findOne({ email: email });
     } catch (err) {
         const error = new HttpError("Could not login, please try again later", 500);
         return next(error);
