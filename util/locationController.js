@@ -1,4 +1,4 @@
-const API_KEY = 'API_KEY';
+const API_KEY = 'API';
 const axios = require("axios");
 
 const HttpError = require('../models/http-error');
@@ -12,7 +12,7 @@ async function getCoordsForAddress(address){
         const error = new HttpError('Could not find location for the specified address.', 422);
         throw error;
     }
-z
+
     const coordinates = data.results[0].geometry.location;
 
     return coordinates;
